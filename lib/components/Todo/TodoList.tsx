@@ -32,7 +32,7 @@ export function TodoList() {
         </h1>
       )}
       <Link href="/addTodo">
-        <button className="border-2 p-3 mt-2">Add To Do</button>
+        <button className="border-2 p-3 mt-2 border-black rounded-xl">Add To Do</button>
       </Link>
     </ul>
   );
