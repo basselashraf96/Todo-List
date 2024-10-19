@@ -6,28 +6,24 @@ import { useState } from "react";
 import { Oval } from "react-loader-spinner";
 
 export function AddTodo() {
-  const { addTodo, editTodo } = useTodos();
+  const { addTodo, editTodo, isLoading } = useTodos();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [title, setTitle] = useState<string>(searchParams.get("title") || "");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const id = searchParams.get("id");
 
   const handleSubmit = async () => {
     if (title.length === 0) return;
 
-    setIsLoading(true);
     try {
       if (id) {
         await editTodo(id, title); // Editing existing todo
       } else {
         await addTodo(title); // Adding new todo
       }
-      router.push("/");
+      router.push("/"); // Navigate back to the main page after successful operation
     } catch (error) {
       console.error("Error while handling todo:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

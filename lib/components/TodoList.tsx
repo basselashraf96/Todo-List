@@ -2,9 +2,10 @@
 
 import { useTodos } from "@lib/hooks";
 import Link from "next/link";
+import { Oval } from "react-loader-spinner";
 
 export function TodoList() {
-  const { todos, deleteTodo } = useTodos();
+  const { todos, deleteTodo, isLoading } = useTodos();
 
   return (
     <ul>
@@ -26,7 +27,9 @@ export function TodoList() {
           </li>
         ))
       ) : (
-        <h1 className="text-white"> there are no todos yet</h1>
+        <h1 className="text-white">
+          {isLoading ? <Oval /> : "there are no todos yet"}
+        </h1>
       )}
       <Link href="/addTodo">
         <button className="border-2 p-3 mt-2">Add To Do</button>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 
 interface Todo {
@@ -9,9 +9,11 @@ interface Todo {
 
 export function useTodos() {
     const [todos, setTodos] = useState<Todo[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // Fetch all todos
     const fetchTodos = async () => {
+        setIsLoading(true);
         try {
             const response = await fetch("/api/todos", {
                 method: "GET",
@@ -20,14 +22,17 @@ export function useTodos() {
                 },
             });
             const data = await response.json();
-            setTodos(data);
+            setTodos(data); // Set todos with fetched data
         } catch (error) {
             console.error("Error fetching todos:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     // Add a new todo
     const addTodo = async (title: string) => {
+        setIsLoading(true);
         try {
             const response = await fetch("/api/todos", {
                 method: "POST",
@@ -37,15 +42,18 @@ export function useTodos() {
                 body: JSON.stringify({ title }),
             });
             if (response.ok) {
-                fetchTodos(); // Refresh todos after adding a new one, usefull when adding a todo form is in the same page with the to do list.
+                fetchTodos(); // Refresh todos after adding a new one
             }
         } catch (error) {
             console.error("Error adding todo:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     // Edit an existing todo
     const editTodo = async (id: string, title: string) => {
+        setIsLoading(true);
         try {
             const response = await fetch("/api/todos", {
                 method: "PUT",
@@ -59,11 +67,14 @@ export function useTodos() {
             }
         } catch (error) {
             console.error("Error editing todo:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     // Delete a todo
     const deleteTodo = async (id: string) => {
+        setIsLoading(true);
         try {
             const response = await fetch("/api/todos", {
                 method: "DELETE",
@@ -73,10 +84,12 @@ export function useTodos() {
                 body: JSON.stringify({ id }),
             });
             if (response.ok) {
-                setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id)); // To match the data from the db without refreshing the page.
+                setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id)); // Remove the deleted todo from the state
             }
         } catch (error) {
             console.error("Error deleting todo:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -84,5 +97,5 @@ export function useTodos() {
         fetchTodos(); // Fetch todos on component mount
     }, []);
 
-    return { todos, addTodo, editTodo, deleteTodo };
-};
+    return { todos, addTodo, editTodo, deleteTodo, isLoading };
+}
