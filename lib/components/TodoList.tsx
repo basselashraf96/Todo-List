@@ -1,0 +1,36 @@
+"use client";
+
+import { useTodos } from "@lib/hooks";
+import Link from "next/link";
+
+export function TodoList() {
+  const { todos, deleteTodo } = useTodos();
+
+  return (
+    <ul>
+      {todos.length !== 0 ? (
+        todos.map((todo) => (
+          <li key={todo.id} className="flex items-center w-52 justify-between">
+            <span className="mr-2">{todo.title}</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => deleteTodo(todo.id)}
+                className="text-red-500"
+              >
+                Delete
+              </button>
+              <Link href={`/addTodo?id=${todo.id}&title=${todo.title}`}>
+                <button className="text-blue-500">edit</button>
+              </Link>
+            </div>
+          </li>
+        ))
+      ) : (
+        <h1 className="text-white"> there are no todos yet</h1>
+      )}
+      <Link href="/addTodo">
+        <button className="border-2 p-3 mt-2">Add To Do</button>
+      </Link>
+    </ul>
+  );
+}
