@@ -8,7 +8,7 @@ import { query } from "./db";
  * 
  * @returns {Promise<Todo[]>} - A promise that resolves with the list of todos.
  */
-export const getAllTodos = async (): Promise<Todo[]> => {
+export const dbFetchTodos  = async (): Promise<Todo[]> => {
   const result = await query('SELECT * FROM todos ORDER BY created_at ASC');
   return result.rows as Todo[]; // Typecast the result as an array of Todo objects
 };
@@ -22,7 +22,7 @@ export const getAllTodos = async (): Promise<Todo[]> => {
  * @param {string} title - The title of the new todo.
  * @returns {Promise<Todo>} - A promise that resolves with the newly created todo.
  */
-export const addTodo = async (id: string, title: string): Promise<Todo> => {
+export const dbCreateTodo  = async (id: string, title: string): Promise<Todo> => {
   const result = await query('INSERT INTO todos (id, title, completed, created_at) VALUES ($1, $2, $3, NOW()) RETURNING *', [id, title, false]);
   return result.rows[0] as Todo;
 };
@@ -36,7 +36,7 @@ export const addTodo = async (id: string, title: string): Promise<Todo> => {
  * @param {string} title - The new title for the todo.
  * @returns {Promise<Todo>} - A promise that resolves with the updated todo.
  */
-export const updateTodo = async (id: string, title: string): Promise<Todo> => {
+export const dbUpdateTodo  = async (id: string, title: string): Promise<Todo> => {
   const result = await query('UPDATE todos SET title = $1 WHERE id = $2 RETURNING *', [title, id]);
   return result.rows[0] as Todo;
 };
@@ -49,7 +49,7 @@ export const updateTodo = async (id: string, title: string): Promise<Todo> => {
  * @param {string} id - The unique identifier for the todo to delete.
  * @returns {Promise<Todo>} - A promise that resolves with the deleted todo.
  */
-export const deleteTodo = async (id: string): Promise<Todo> => {
+export const dbDeleteTodo  = async (id: string): Promise<Todo> => {
   const result = await query('DELETE FROM todos WHERE id = $1 RETURNING *', [id]);
   return result.rows[0] as Todo;
 };

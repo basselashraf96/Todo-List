@@ -1,4 +1,4 @@
-import { addTodo, deleteTodo, getAllTodos, updateTodo } from '@lib/db';
+import { dbCreateTodo, dbDeleteTodo, dbFetchTodos, dbUpdateTodo } from '@lib/db';
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
  */
 export async function GET(): Promise<NextResponse> {
     try {
-        const getTodos = await getAllTodos();
+        const getTodos = await dbFetchTodos();
         return NextResponse.json(getTodos);
     } catch (error) {
         return NextResponse.json({ message: 'Error fetching todos', error }, { status: 500 });
@@ -31,7 +31,7 @@ export async function GET(): Promise<NextResponse> {
 export async function POST(request: Request): Promise<NextResponse> {
     const { title }: { title: string } = await request.json();
     try {
-        const newTodo = await addTodo(uuidv4(), title);
+        const newTodo = await dbCreateTodo(uuidv4(), title);
         return NextResponse.json(newTodo);
     } catch (error) {
         return NextResponse.json({ message: 'Error creating todo', error }, { status: 500 });
@@ -49,7 +49,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 export async function PUT(request: Request): Promise<NextResponse> {
     const { id, title }: { id: string, title: string } = await request.json();
     try {
-        const updatedTodo = await updateTodo(id, title);
+        const updatedTodo = await dbUpdateTodo(id, title);
         return NextResponse.json(updatedTodo);
     } catch (error) {
         return NextResponse.json({ message: 'Error updating todo', error }, { status: 500 });
@@ -67,7 +67,7 @@ export async function PUT(request: Request): Promise<NextResponse> {
 export async function DELETE(request: Request): Promise<NextResponse> {
     const { id }: { id: string } = await request.json();
     try {
-        const deletedTodo = await deleteTodo(id);
+        const deletedTodo = await dbDeleteTodo(id);
         return NextResponse.json(deletedTodo);
     } catch (error) {
         return NextResponse.json({ message: 'Error deleting todo', error }, { status: 500 });

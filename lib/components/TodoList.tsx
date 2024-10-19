@@ -21,7 +21,7 @@ export function TodoList() {
                 Delete
               </button>
               <Link href={`/addTodo?id=${todo.id}&title=${todo.title}`}>
-                <button className="text-blue-500">edit</button>
+                <button className="text-blue-500">Edit</button>
               </Link>
             </div>
           </li>
