@@ -1,9 +1,11 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { TOKEN } from "@lib/util/config";
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [signedIn, setSignedIn] = useState<boolean>(!!sessionStorage.getItem(TOKEN));
   const router = useRouter();
 
   // Register a new user
@@ -19,10 +21,9 @@ export function useAuth() {
       if (!response.ok) {
         throw new Error("Registration failed");
       }
+      setIsLoading(false);
     } catch (error) {
       console.error("Error registering user:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -41,14 +42,21 @@ export function useAuth() {
       }
 
       const data = await response.json();
-      localStorage.setItem("token", data.token); // Store JWT token
-      router.push("/");
+      sessionStorage.setItem(TOKEN, data.token);
+      location.assign("/");
+      setSignedIn(true);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error logging in:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  return { registerUser, loginUser, isLoading };
+  // Sign out user
+  const signOut = () => {
+    sessionStorage.removeItem(TOKEN);
+    setSignedIn(false);
+    router.push("/login");
+  };
+
+  return { registerUser, loginUser, signOut, isLoading, signedIn };
 }
