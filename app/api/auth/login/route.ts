@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { dbFindUser } from "@lib/db/users";
-import { User } from "@lib/util/types";
+import { JwtPayload, User } from "@lib/util/types";
 import jwt from "jsonwebtoken";
 
 /**
@@ -22,11 +22,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
 
     // Generate JWT Token
-    const token = jwt.sign(
-      { userId: user.id, username: user.username },
-      process.env.JWT_SECRET as string,
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ userId: user.id, username: user.username } as JwtPayload, process.env.JWT_SECRET as string, {
+      expiresIn: "1h",
+    });
 
     return NextResponse.json({ message: "Login successful", token });
   } catch (error) {

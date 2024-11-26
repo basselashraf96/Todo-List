@@ -1,12 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TOKEN } from "@lib/util/config";
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [signedIn, setSignedIn] = useState<boolean>(!!sessionStorage.getItem(TOKEN));
+  const [signedIn, setSignedIn] = useState<boolean>(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setSignedIn(!!sessionStorage.getItem(TOKEN));
+  }, []);
 
   // Register a new user
   const registerUser = async (userData: { name: string; email: string; username: string; password: string }) => {

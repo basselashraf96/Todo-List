@@ -1,6 +1,6 @@
 "use client";
 import { TodoList } from "@lib/components";
-import { getToken } from "@lib/util/jwt";
+import { TOKEN } from "@lib/util/config";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -8,7 +8,7 @@ const HomePage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const token = getToken(); // Get token from utility
+    const token = sessionStorage.getItem(TOKEN); // Get token from utility
 
     if (!token) {
       // If no token, redirect to login page

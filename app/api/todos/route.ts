@@ -1,5 +1,7 @@
 import { dbCreateTodo, dbDeleteTodo, dbFetchTodos, dbUpdateTodo } from "@lib/db";
-import { NextResponse } from "next/server";
+import { authMiddleware } from "@lib/middlewares/authMiddleware";
+import { authMiddlewareResponse } from "@lib/util/types";
+import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
 /**
@@ -12,13 +14,16 @@ import { v4 as uuidv4 } from "uuid";
  * @returns {Promise<NextResponse>} - JSON response containing the list of todos or an error message.
  */
 export async function GET(request: Request): Promise<NextResponse> {
-  const userId = request.headers.get("user-id"); // Ensure 'user-id' is passed in headers
+  const res = await authMiddleware(request as NextRequest);
+  const userIdJson = (await res.json()) as authMiddlewareResponse;
+  const userId = userIdJson.user;
+
   if (!userId) {
-    return NextResponse.json({ error: "Missing 'user-id' header" }, { status: 401 });
+    return NextResponse.json({ error: "User ID is required" }, { status: 401 });
   }
 
   try {
-    const getTodos = await dbFetchTodos(userId);
+    const getTodos = await dbFetchTodos(userId as string);
     return NextResponse.json(getTodos);
   } catch (error) {
     return NextResponse.json({ message: "Error fetching todos", error }, { status: 500 });
@@ -35,7 +40,10 @@ export async function GET(request: Request): Promise<NextResponse> {
  * @returns {Promise<NextResponse>} - JSON response containing the new todo item or an error message.
  */
 export async function POST(request: Request): Promise<NextResponse> {
-  const { title, userId }: { title: string; userId: string } = await request.json();
+  const res = await authMiddleware(request as NextRequest);
+  const userIdJson = (await res.json()) as authMiddlewareResponse;
+  const userId = userIdJson.user;
+  const { title }: { title: string } = await request.json();
 
   try {
     const newTodo = await dbCreateTodo(uuidv4(), title, userId);
@@ -55,7 +63,10 @@ export async function POST(request: Request): Promise<NextResponse> {
  * @returns {Promise<NextResponse>} - JSON response containing the updated todo or an error message.
  */
 export async function PUT(request: Request): Promise<NextResponse> {
-  const { id, title, userId }: { id: string; title: string; userId: string } = await request.json();
+  const res = await authMiddleware(request as NextRequest);
+  const userIdJson = (await res.json()) as authMiddlewareResponse;
+  const userId = userIdJson.user;
+  const { id, title }: { id: string; title: string } = await request.json();
   try {
     const updatedTodo = await dbUpdateTodo(id, title, userId);
     return NextResponse.json(updatedTodo);
@@ -74,7 +85,10 @@ export async function PUT(request: Request): Promise<NextResponse> {
  * @returns {Promise<NextResponse>} - JSON response containing the deleted todo or an error message.
  */
 export async function DELETE(request: Request): Promise<NextResponse> {
-  const { id, userId }: { id: string; userId: string } = await request.json();
+  const res = await authMiddleware(request as NextRequest);
+  const userIdJson = (await res.json()) as authMiddlewareResponse;
+  const userId = userIdJson.user;
+  const { id }: { id: string } = await request.json();
   try {
     const deletedTodo = await dbDeleteTodo(id, userId);
     return NextResponse.json(deletedTodo);

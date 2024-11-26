@@ -32,3 +32,19 @@ export interface UserInput {
   password: string;
   confirmPassword: string;
 }
+
+export interface JwtPayload {
+  userId: string;
+  username: string;
+}
+
+export interface ValidationResponse {
+  success: boolean;
+  data?: string;
+  message?: string;
+  status?: number;
+}
+
+export interface authMiddlewareResponse {
+  user: string;
+}

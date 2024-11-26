@@ -9,7 +9,7 @@ export function TodoList() {
 
   return (
     <ul>
-      {todos.length !== 0 ? (
+      {todos.length ? (
         todos.map((todo) => (
           <li key={todo.id} className="flex items-center w-52 justify-between">
             <span className="mr-2">{todo.title}</span>
