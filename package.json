@@ -6,17 +6,24 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate": "npx knex migrate:latest --knexfile ./lib/db/postgres/knexfile.ts",
+    "make-seed":"npx knex seed:make dev --knexfile ./lib/db/postgres/knexfile.ts",
+    "seed":"npx knex seed:run --knexfile ./lib/db/postgres/knexfile.ts",
+    "down": "npx knex migrate:down --knexfile ./lib/db/postgres/knexfile.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "jose": "^5.9.4",
     "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
     "next": "14.2.14",
+    "objection": "^3.1.5",
     "pg": "^8.13.0",
     "react": "^18",
     "react-dom": "^18",
     "react-loader-spinner": "^6.1.6",
+    "sqlite3": "^5.1.7",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
