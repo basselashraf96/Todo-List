@@ -10,7 +10,7 @@ import { query } from "./db";
  * @returns {Promise<Todo[]>} - A promise that resolves with the list of todos.
  */
 export const dbFetchTodos = async (userId: string): Promise<Todo[]> => {
-  const result = await query("SELECT * FROM todos WHERE user_id = $1 ORDER BY created_at ASC", [userId]);
+  const result = await query(`SELECT * FROM "todo" WHERE user_id = $1 ORDER BY created_at ASC`, [userId]);
   return result.rows as Todo[]; // Typecast the result as an array of Todo objects
 };
 
@@ -25,7 +25,7 @@ export const dbFetchTodos = async (userId: string): Promise<Todo[]> => {
  * @returns {Promise<Todo>} - A promise that resolves with the newly created todo.
  */
 export const dbCreateTodo = async (id: string, title: string, userId: string): Promise<Todo> => {
-  const result = await query("INSERT INTO todos (id, title, completed, created_at, user_id) VALUES ($1, $2, $3, NOW(), $4) RETURNING *", [
+  const result = await query(`INSERT INTO "todo" (id, title, completed, created_at, user_id) VALUES ($1, $2, $3, NOW(), $4) RETURNING *`, [
     id,
     title,
     false,
@@ -45,7 +45,7 @@ export const dbCreateTodo = async (id: string, title: string, userId: string): P
  * @returns {Promise<Todo>} - A promise that resolves with the updated todo.
  */
 export const dbUpdateTodo = async (id: string, title: string, userId: string): Promise<Todo> => {
-  const result = await query("UPDATE todos SET title = $1 WHERE id = $2 AND user_id = $3 RETURNING *", [title, id, userId]);
+  const result = await query(`UPDATE "todo" SET title = $1 WHERE id = $2 AND user_id = $3 RETURNING *`, [title, id, userId]);
   return result.rows[0] as Todo;
 };
 
@@ -59,6 +59,6 @@ export const dbUpdateTodo = async (id: string, title: string, userId: string): P
  * @returns {Promise<Todo>} - A promise that resolves with the deleted todo.
  */
 export const dbDeleteTodo = async (id: string, userId: string): Promise<Todo> => {
-  const result = await query("DELETE FROM todos WHERE id = $1 AND user_id = $2 RETURNING *", [id, userId]);
+  const result = await query(`DELETE FROM "todo" WHERE id = $1 AND user_id = $2 RETURNING *`, [id, userId]);
   return result.rows[0] as Todo;
 };

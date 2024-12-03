@@ -11,7 +11,9 @@ import bcrypt from "bcryptjs";
 export const dbCreateUser = async (user: UserData): Promise<User> => {
   try {
     const result = await query(
-      "INSERT INTO users (id, name, email, username, password_hash, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *",
+      `INSERT INTO "user" (id, name, email, username, password_hash, created_at) 
+      VALUES ($1, $2, $3, $4, $5, NOW()) 
+      RETURNING *`,
       [user.id, user.name, user.email, user.username, user.password]
     );
     return result.rows[0] as User;
@@ -23,7 +25,7 @@ export const dbCreateUser = async (user: UserData): Promise<User> => {
 
 export const dbFindUser = async (username: string, password: string): Promise<User | null> => {
   try {
-    const result = await query("SELECT * FROM users WHERE username = $1", [username]);
+    const result = await query(`SELECT * FROM "user" WHERE username = $1`, [username]);
 
     if (result.rows.length === 0) {
       return null;
