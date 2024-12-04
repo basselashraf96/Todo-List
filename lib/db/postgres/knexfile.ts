@@ -5,7 +5,7 @@ import { getDbHost, getDbName, getDbPassword, getDbPort, getDbUser } from "./Pos
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
-const knexConfig: Knex.Config = {
+export const knexConfig: Knex.Config = {
   client: "pg",
   connection: getConnectionCfg(),
   pool: {

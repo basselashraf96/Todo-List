@@ -24,8 +24,8 @@ export async function seed(knex: Knex): Promise<void> {
     {
       id: '11111111-1111-1111-1111-111111111111', // Example UUID (can use knex.fn.uuid() in PostgreSQL)
       username: 'johndoe',
-      password_hash: 'hashedpassword1', // Example hashed password
-      created_at: knex.fn.now(),  // Current timestamp
+      password_hash: 'hashedpassword1',
+      created_at: Date.now(),  // Current timestamp
       name: 'John Doe',
       email: 'john.doe@example.com',
     },
@@ -33,7 +33,7 @@ export async function seed(knex: Knex): Promise<void> {
       id: '22222222-2222-2222-2222-222222222222',
       username: 'janedoe',
       password_hash: 'hashedpassword2',
-      created_at: knex.fn.now(),
+      created_at: Date.now(),
       name: 'Jane Doe',
       email: 'jane.doe@example.com',
     }

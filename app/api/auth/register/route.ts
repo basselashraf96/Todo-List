@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
 import { UserInput } from "@lib/util/types";
-import { dbCreateUser } from "@lib/db/users";
+import { dbCreateUserByObjection } from "@lib/db/users";
 
 export interface UserData {
   id: string;
@@ -21,11 +21,15 @@ export interface UserData {
  * @returns {Promise<NextResponse>} - JSON response containing the new user data or an error message.
  */
 export async function POST(request: Request): Promise<NextResponse> {
-  const { name, email, username, password, confirmPassword }: UserInput = await request.json();
+  const { name, email, username, password, confirmPassword }: UserInput =
+    await request.json();
 
   // Validate if passwords match for security
   if (password !== confirmPassword) {
-    return NextResponse.json({ message: "Passwords do not match" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Passwords do not match" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -39,10 +43,13 @@ export async function POST(request: Request): Promise<NextResponse> {
       password: hashedPassword,
     };
 
-    const createdUser = await dbCreateUser(newUser);
+    const createdUser = await dbCreateUserByObjection(newUser);
 
     return NextResponse.json(createdUser);
   } catch (error) {
-    return NextResponse.json({ message: "Error creating user", error }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error creating user", error },
+      { status: 500 }
+    );
   }
 }

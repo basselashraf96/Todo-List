@@ -1,7 +1,7 @@
 import { Model } from "objection";
-import { Todo } from "./todo";
+import { TodoModel } from "./todo";
 
-export class User extends Model {
+export class UserModel extends Model {
   static get tableName() {
     return "user";
   }
@@ -10,7 +10,7 @@ export class User extends Model {
   id!: string;
   username!: string;
   password_hash!: string;
-  created_at!: string;
+  created_at!: number;
   name!: string;
   email!: string;
 
@@ -20,22 +20,20 @@ export class User extends Model {
       required: ["username", "password_hash", "name", "email"],
 
       properties: {
-        id: { type: "string", format: "uuid" },
+        id: { type: "string" },
         username: { type: "string", maxLength: 50 },
         password_hash: { type: "string", maxLength: 255 },
-        created_at: { type: "string", format: "date-time" },
+        created_at: { type: "integer" },
         name: { type: "string", maxLength: 255 },
-        email: { type: "string", format: "email", maxLength: 255 },
+        email: { type: "string", maxLength: 255 },
       },
     };
   }
-
-  // Relationship mapping: A user can have many todos
   static get relationMappings() {
     return {
       todos: {
         relation: Model.HasManyRelation,
-        modelClass: Todo,
+        modelClass: TodoModel,
         join: {
           from: "user.id",
           to: "todo.user_id",
@@ -43,5 +41,9 @@ export class User extends Model {
       },
     };
   }
-
+  // Relationship mapping: A user can have many todos
+  override $beforeInsert() {
+    this.id = crypto.randomUUID();
+    this.created_at = Date.now();
+  }
 }
