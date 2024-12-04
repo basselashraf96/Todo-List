@@ -1,7 +1,7 @@
 import { Model } from "objection";
-import { User } from "./user";
+import { UserModel } from "./user";
 
-export class Todo extends Model {
+export class TodoModel extends Model {
   static get tableName() {
     return "todo";
   }
@@ -10,7 +10,7 @@ export class Todo extends Model {
   id!: string;
   title!: string;
   completed!: boolean;
-  created_at!: string;
+  created_at!: number;
   user_id!: string; // Foreign key to the user
 
   // JSON Schema for validating the properties of a Todo
@@ -20,11 +20,11 @@ export class Todo extends Model {
       required: ["title", "user_id"], // 'title' and 'user_id' are required fields
 
       properties: {
-        id: { type: "string", format: "uuid" },
+        id: { type: "string" },
         title: { type: "string", maxLength: 255 },
         completed: { type: "boolean", default: false },
-        created_at: { type: "string", format: "date-time" },
-        user_id: { type: "string", format: "uuid" }, // Foreign key to user
+        created_at: { type: "integer" },
+        user_id: { type: "string" }, // Foreign key to user
       },
     };
   }
@@ -34,12 +34,16 @@ export class Todo extends Model {
     return {
       user: {
         relation: Model.BelongsToOneRelation,
-        modelClass: User,
+        modelClass: UserModel,
         join: {
           from: "todo.user_id",
           to: "user.id",
         },
       },
     };
+  }
+  override $beforeInsert() {
+    this.id = crypto.randomUUID();
+    this.created_at = Date.now();
   }
 }

@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
        table.uuid('id').primary(); // Primary key
        table.string('username', 50).notNullable().unique(); // Username (unique, not null)
        table.string('password_hash', 255).notNullable(); // Password hash (not null)
-       table.timestamp('created_at').defaultTo(knex.fn.now()); // Created at timestamp (default to current timestamp)
+       table.bigInteger('created_at').defaultTo(Date.now()); // Created at timestamp (default to current timestamp)
        table.string('name', 255).notNullable(); // Name (not null)
        table.string('email', 255).notNullable(); // Email (not null)
      })
@@ -18,7 +18,7 @@ export async function up(knex: Knex): Promise<void> {
        table.uuid('id').primary(); // Primary key
        table.string('title', 255).notNullable(); // Title column (not null)
        table.boolean('completed').defaultTo(false).notNullable(); // Completed column (default to false)
-       table.timestamp('created_at').defaultTo(knex.fn.now()); // Created at timestamp (default to now)
+       table.bigInteger('created_at').defaultTo(Date.now()); // Created at timestamp (default to now)
        
        // Define the user_id column as not nullable
        table.uuid('user_id').notNullable(); // User ID (not nullable)

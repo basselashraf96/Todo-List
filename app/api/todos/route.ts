@@ -1,4 +1,9 @@
-import { dbCreateTodo, dbDeleteTodo, dbFetchTodos, dbUpdateTodo } from "@lib/db";
+import {
+  dbCreateTodoWithObjection,
+  dbDeleteTodoWithObjection,
+  dbFetchTodosWithObjection,
+  dbUpdateTodoWithObjection,
+} from "@lib/db";
 import { authMiddleware } from "@lib/middlewares/authMiddleware";
 import { authMiddlewareResponse } from "@lib/util/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -23,10 +28,13 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   try {
-    const getTodos = await dbFetchTodos(userId as string);
+    const getTodos = await dbFetchTodosWithObjection(userId as string);
     return NextResponse.json(getTodos);
   } catch (error) {
-    return NextResponse.json({ message: "Error fetching todos", error }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error fetching todos", error },
+      { status: 500 }
+    );
   }
 }
 
@@ -46,10 +54,13 @@ export async function POST(request: Request): Promise<NextResponse> {
   const { title }: { title: string } = await request.json();
 
   try {
-    const newTodo = await dbCreateTodo(uuidv4(), title, userId);
+    const newTodo = await dbCreateTodoWithObjection(uuidv4(), title, userId);
     return NextResponse.json(newTodo);
   } catch (error) {
-    return NextResponse.json({ message: "Error creating todo", error }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error creating todo", error },
+      { status: 500 }
+    );
   }
 }
 
@@ -68,10 +79,13 @@ export async function PUT(request: Request): Promise<NextResponse> {
   const userId = userIdJson.user;
   const { id, title }: { id: string; title: string } = await request.json();
   try {
-    const updatedTodo = await dbUpdateTodo(id, title, userId);
+    const updatedTodo = await dbUpdateTodoWithObjection(id, title, userId);
     return NextResponse.json(updatedTodo);
   } catch (error) {
-    return NextResponse.json({ message: "Error updating todo", error }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error updating todo", error },
+      { status: 500 }
+    );
   }
 }
 
@@ -90,9 +104,12 @@ export async function DELETE(request: Request): Promise<NextResponse> {
   const userId = userIdJson.user;
   const { id }: { id: string } = await request.json();
   try {
-    const deletedTodo = await dbDeleteTodo(id, userId);
+    const deletedTodo = await dbDeleteTodoWithObjection(id, userId);
     return NextResponse.json(deletedTodo);
   } catch (error) {
-    return NextResponse.json({ message: "Error deleting todo", error }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error deleting todo", error },
+      { status: 500 }
+    );
   }
 }
